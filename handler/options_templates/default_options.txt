@@ -34,3 +34,5 @@
 -mistakes
 	-restore_pre_talaris_2013_behavior true
 -nstruct 500 
+
+-out:path:all {}

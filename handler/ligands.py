@@ -13,7 +13,7 @@ class LigandDescriptor():
     
     @property
     def name(self):
-        return self.ligand_pdb.name
+        return self.ligand_pdb.stem
     
     @classmethod
     def generate_from_directory(cls, dir):
@@ -44,5 +44,8 @@ class LigandDescriptor():
                 temp_dir.joinpath(name + '.params'),
                 temp_dir.joinpath(name + '_conformers.pdb')
             ]
-            assert all(ef.is_file() for ef in expected_files)
-            yield cls(*expected_files)
+            try:
+                assert all(ef.is_file() for ef in expected_files)
+                yield cls(*expected_files)
+            except AssertionError as e:
+                print(expected_files)

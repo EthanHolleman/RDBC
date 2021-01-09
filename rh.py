@@ -14,6 +14,7 @@ def main():
     args = get_args()
     
     ligand_descriptors = LigandDescriptor.generate_from_directory(args.ligands)
+    DockJob.rosetta_exe = args.exe
     jobs = (DockJob(
         args.parent.joinpath(ligand.name), 
         ligand, 
@@ -22,8 +23,8 @@ def main():
 
     for j in jobs:
         setup_good = j.set_up_for_submit()
-        if setup_good:
-            j.submit()
+        
+        j.submit()
 
 
 if __name__ == "__main__":
