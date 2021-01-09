@@ -1,7 +1,7 @@
 from pathlib import Path
 from handler import DEFAULT_BATCH, DEFAULT_XML, DEFAULT_OPTIONS
 from handler.utils import join_protein_ligand_pdbs
-import os
+import os, sys
 
 class DockJob():
 
@@ -21,6 +21,10 @@ class DockJob():
         DockJob.job_counter += 1
 
         self._id = DockJob.job_counter
+    
+    @property
+    def name(self):
+        return '{}_{}_{}'.format(self._id, self.output_dir, self.ligand_descriptor.name)
 
     @property
     def output_dir(self):

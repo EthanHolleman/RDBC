@@ -1,18 +1,17 @@
-from handler.file_manager import FileManager
 from handler.ligands import LigandDescriptor
 from handler.docking import DockJob
 from handler.args import get_args
+from handler import make_logger
 
-l = LigandDescriptor.generate_from_directory(
-    '/home/ethan/data/lab_notes/Gino/sdf/ligand_params')
-l1 = next(l)
 
-d = DockJob('.', l1, 'my.pdb')
+logger = make_logger(__name__)
 
 
 def main():
+    logger.info('Started run')
     args = get_args()
-    
+    pretty_args = ' '.join(['{}: {}'.format(arg, getattr(args, arg)) for arg in vars(args)])
+    logger.info('Submitted following arguments: {}'.format(pretty_args))
     ligand_descriptors = LigandDescriptor.generate_from_directory(args.ligands)
     DockJob.rosetta_exe = args.exe
     jobs = (DockJob(
@@ -21,10 +20,17 @@ def main():
         protein=args.protein) 
     for ligand in ligand_descriptors)
 
-    for j in jobs:
-        setup_good = j.set_up_for_submit()
-        
-        j.submit()
+    if args.moist:  # only run the one job (usually for testing)
+        logger.info('Running moist')
+        first_job = next(jobs)
+        first_job.set_up_for_submit()
+        first_job.submit()
+    else:
+        for j in jobs:
+            setup_good = j.set_up_for_submit()
+            if not args.dry:
+                j.submit()
+                logger.info('Submitted job: {}'.format(j.name))
 
 
 if __name__ == "__main__":

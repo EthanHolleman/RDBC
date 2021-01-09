@@ -1,4 +1,8 @@
 from pathlib import Path
+from handler import make_logger
+
+logger = make_logger(__name__)
+
 
 class LigandDescriptor():
     '''Class which contains (or at least points to the files which do) all data
@@ -10,11 +14,11 @@ class LigandDescriptor():
         self.ligand_pdb = Path(ligand_pdb)
         self.ligand_params = Path(ligand_params)
         self.ligand_conformers = Path(ligand_conformers)
-    
+
     @property
     def name(self):
         return self.ligand_pdb.stem
-    
+
     @classmethod
     def generate_from_directory(cls, dir):
         '''Creates a generator of LigandDescriptor objects from a directory
@@ -33,11 +37,12 @@ class LigandDescriptor():
 
         Returns:
             list: List of LigandDescriptor objects created from the directory.
-        
+
         '''
         temp_dir = Path(dir)
         ligand_files = list(Path(dir).iterdir())
-        ligand_names = [lf.stem for lf in ligand_files if lf.suffix == '.pdb' and '_' not in lf.name]
+        ligand_names = [
+            lf.stem for lf in ligand_files if lf.suffix == '.pdb' and '_' not in lf.name]
         for name in ligand_names:
             expected_files = [
                 temp_dir.joinpath(name + '.pdb'),
@@ -48,4 +53,4 @@ class LigandDescriptor():
                 assert all(ef.is_file() for ef in expected_files)
                 yield cls(*expected_files)
             except AssertionError as e:
-                print(expected_files)
+                logger.error(expected_files)

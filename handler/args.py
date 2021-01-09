@@ -8,8 +8,13 @@ def get_args():
     parser.add_argument('-p', '--protein', help='Path to protein (pdb) file without ligand.')
     parser.add_argument('-o', '--parent', help='Parent directory that all results are written under.')
     parser.add_argument('-e', '--exe', help='Path to RosettaScripts exe')
+    parser.add_argument('-m', '--moist', action='store_true', help='Moist run. Do everything normally but only submit the first job.')
+    parser.add_argument('-d', '--dry', action='store_true', help='Dry run. Do everything except submit jobs.')
+
     a = parser.parse_args()
     a.parent = Path(a.parent)
     a.protein = Path(a.protein)
     a.exe = Path(a.exe)
+    if not a.parent.is_dir():
+        a.parent.mkdir()
     return a
