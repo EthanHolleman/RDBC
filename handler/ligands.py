@@ -51,6 +51,8 @@ class LigandDescriptor():
             ]
             try:
                 assert all(ef.is_file() for ef in expected_files)
+                print(expected_files)
                 yield cls(*expected_files)
             except AssertionError as e:
+                print(e)
                 logger.error(expected_files)

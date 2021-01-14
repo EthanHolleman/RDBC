@@ -23,6 +23,10 @@ class DockJob():
         self._id = DockJob.job_counter
     
     @property
+    def run_name(self):
+        return self.ligand_descriptor.name
+    
+    @property
     def name(self):
         return '{}_{}_{}'.format(self._id, self.output_dir, self.ligand_descriptor.name)
 
@@ -91,7 +95,7 @@ class DockJob():
     def set_up_for_submit(self):
         batch_template_string = open(self.batch_template).read()
         batch_template_string = batch_template_string.format(
-           self._rosetta_cmd()
+           self.run_name, self._rosetta_cmd()
         )
         with open(str(self.sbatch_file), 'w') as handle:
             handle.write(batch_template_string)
