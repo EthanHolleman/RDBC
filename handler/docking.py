@@ -106,7 +106,8 @@ class DockJob():
         Returns:
             [type]: [description]
         '''
-        os.system('sbatch {}'.format(self.sbatch_file))
+        cmd = 'sbatch {}'.format(self.sbatch_file)
+        os.system(cmd)
     
     def _create_options_file(self, path):
         options_template_string = open(str(self.options_template)).read()
