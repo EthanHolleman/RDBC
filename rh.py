@@ -33,8 +33,8 @@ def main():
             if not args.dry:
                 j.submit()
                 logger.info('Submitted job: {}'.format(j.name))
-    if job_counter == 0:
-        logger.critical('NO JOBS WERE CREATED')
+        if job_counter == 0:
+            logger.critical('NO JOBS WERE CREATED')
 
 
 if __name__ == "__main__":
