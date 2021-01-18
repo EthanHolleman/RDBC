@@ -31,7 +31,7 @@
         <MoveMapBuilder name="final" sc_interface="side_chain_for_final" bb_interface="backbone" minimize_water="false"/>
     </MOVEMAP_BUILDERS>
 
-    <SCORINGGRIDS ligand_chain="X" width="15">
+    <SCORINGGRIDS ligand_chain="X" width="25">
         <ClassicGrid grid_name="classic" weight="1.0"/>
     </SCORINGGRIDS>
 

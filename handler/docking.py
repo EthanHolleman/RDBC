@@ -96,7 +96,7 @@ class DockJob():
     def set_up_for_submit(self):
         batch_template_string = open(self.batch_template).read()
         batch_template_string = batch_template_string.format(
-           self.run_name, self._rosetta_cmd()
+           self.run_name, self.control_dir, self.control_dir, self._rosetta_cmd()
         )
         with open(str(self.sbatch_file), 'w') as handle:
             handle.write(batch_template_string)
