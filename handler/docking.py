@@ -117,7 +117,7 @@ class DockJob():
             self.ligand_descriptor.ligand_params,
             self.xml_script_file,
             self.results_dir,
-            self.number_interations
+            self.number_iterations
         )
         with open(str(path), 'w') as handle:
             handle.write(options_template_string)
