@@ -63,7 +63,7 @@
         <Add mover_name="transform"/>
         <Add mover_name="high_res_docker"/>
         <Add mover_name="final"/>
-        <Add mover_name="add_scores"/>
+        <Add mover_name="score"/>
     </PROTOCOLS>
 
 </ROSETTASCRIPTS>
