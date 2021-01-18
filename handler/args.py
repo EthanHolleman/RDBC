@@ -11,7 +11,7 @@ def get_args():
     parser.add_argument('-m', '--moist', action='store_true', help='Moist run. Do everything normally but only submit the first job.')
     parser.add_argument('-d', '--dry', action='store_true', help='Dry run. Do everything except submit jobs.')
     parser.add_argument('-i', '--num_iters', default=2000, type=int, help='Number of iterations to run for each structure. Default 2000.')
-
+    parser.add_argument('-x', '--xml_template', default='', help='Path to Rosetta script XML template.')
     a = parser.parse_args()
     a.parent = Path(a.parent)
     a.protein = Path(a.protein)

@@ -2,6 +2,7 @@ from handler.ligands import LigandDescriptor
 from handler.docking import DockJob
 from handler.args import get_args
 from handler import make_logger
+from handler import DEFAULT_XML
 
 
 logger = make_logger(__name__)
@@ -14,11 +15,16 @@ def main():
     logger.info('Submitted following arguments: {}'.format(pretty_args))
     ligand_descriptors = LigandDescriptor.generate_from_directory(args.ligands)
     DockJob.rosetta_exe = args.exe
+    if args.xml_template:
+        xml_template = args.xml_template
+    else:
+        xml_template = DEFAULT_XML
     jobs = (DockJob(
         args.parent.joinpath(ligand.name), 
         ligand, 
         protein=args.protein,
-        number_iterations=args.num_iters) 
+        number_iterations=args.num_iters,
+        xml_template=xml_template) 
     for ligand in ligand_descriptors)
 
     if args.moist:  # only run the one job (usually for testing)
