@@ -10,13 +10,14 @@ class DockJob():
 
     def __init__(self, output_dir, ligand_descriptor, protein,
                 xml_template=DEFAULT_XML, options_template=DEFAULT_OPTIONS,
-                batch_template=DEFAULT_BATCH):
+                batch_template=DEFAULT_BATCH, number_iterations=2000):
         self.output_dir = Path(output_dir)
         self.ligand_descriptor = ligand_descriptor
         self.xml_template = xml_template
         self.batch_template = batch_template
         self.protein = protein
         self.options_template = options_template
+        self.number_iterations = number_iterations
 
         DockJob.job_counter += 1
 
@@ -115,7 +116,8 @@ class DockJob():
             self.protein_ligand_file,
             self.ligand_descriptor.ligand_params,
             self.xml_script_file,
-            self.results_dir
+            self.results_dir,
+            self.number_interations
         )
         with open(str(path), 'w') as handle:
             handle.write(options_template_string)

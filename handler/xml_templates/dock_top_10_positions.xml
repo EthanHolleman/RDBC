@@ -1,0 +1,66 @@
+<ROSETTASCRIPTS>
+    This script template was created after running 2000 IR motif binding receptor
+    docking experiments. The top 10 most stable ligand-(Ir)- protein complexes
+    were used and the average position of the IR ligand was extracted. These
+    top 10 positions were then used as 10 starting coordinates in addition to
+    two cooordinates that were manually picked based on their poximity to the
+    PTB domain based on a strucutral aligment of Zhou et al Shc and model
+    Shc. 
+
+    <SCOREFXNS>
+        <ScoreFunction name="ligand_soft_rep" weights="ligand_soft_rep">
+        </ScoreFunction>
+        <ScoreFunction name="hard_rep" weights="ligand">
+        </ScoreFunction>
+    </SCOREFXNS>
+
+    <LIGAND_AREAS>
+        <LigandArea name="inhibitor_dock_sc" chain="X" cutoff="6.0" add_nbr_radius="true" all_atom_mode="false"/>
+        <LigandArea name="inhibitor_final_sc" chain="X" cutoff="6.0" add_nbr_radius="true" all_atom_mode="false"/>
+        <LigandArea name="inhibitor_final_bb" chain="X" cutoff="7.0" add_nbr_radius="false" all_atom_mode="true" Calpha_restraints="0.3"/>
+    </LIGAND_AREAS>
+
+    <INTERFACE_BUILDERS>
+        <InterfaceBuilder name="side_chain_for_docking" ligand_areas="inhibitor_dock_sc"/>
+        <InterfaceBuilder name="side_chain_for_final" ligand_areas="inhibitor_final_sc"/>
+        <InterfaceBuilder name="backbone" ligand_areas="inhibitor_final_bb" extension_window="3"/>
+    </INTERFACE_BUILDERS>
+
+    <MOVEMAP_BUILDERS>
+        <MoveMapBuilder name="docking" sc_interface="side_chain_for_docking" minimize_water="false"/>
+        <MoveMapBuilder name="final" sc_interface="side_chain_for_final" bb_interface="backbone" minimize_water="false"/>
+    </MOVEMAP_BUILDERS>
+
+    <SCORINGGRIDS ligand_chain="X" width="15">
+        <ClassicGrid grid_name="classic" weight="1.0"/>
+    </SCORINGGRIDS>
+
+    <MOVERS>
+        <StartFrom name="move_to_start" chain="X">
+            <Coordinates x="0.369952886529529" y="-0.224283344392833" z="-0.0550613802256138"/> Shc1-PTB_1OY2_0061_NPEYp_0436
+            <Coordinates x="0.149284671532847" y="0.528036828135368" z="0.0460935633709356"/> Shc1-PTB_1OY2_0061_NPEYp_0902
+            <Coordinates x="0.382230258792303" y="0.381028201725282" z="-0.330189449236894"/> Shc1-PTB_1OY2_0061_NPEYp_0990
+            <Coordinates x="0.389522229595222" y="-0.23528400796284" z="-0.116425680159257"/> Shc1-PTB_1OY2_0061_NPEYp_1088
+            <Coordinates x="0.211395487723955" y="0.607191439946914" z="0.0233440610484406"/> Shc1-PTB_1OY2_0061_NPEYp_1204
+            <Coordinates x="0.436769077637691" y="-0.278233908427339" z="-0.128663238221632"/> Shc1-PTB_1OY2_0061_NPEYp_1459
+            <Coordinates x="0.389725282017253" y="0.180718314532183" z="-0.273988719309887"/> Shc1-PTB_1OY2_0061_NPEYp_1546
+            <Coordinates x="0.201015925680159" y="0.590797942932979" z="0.00912209688122095"/> Shc1-PTB_1OY2_0061_NPEYp_1584
+            <Coordinates x="0.400180822826808" y="0.231628069011281" z="-0.339161247511612"/> Shc1-PTB_1OY2_0061_NPEYp_1832
+            <Coordinates x="0.22235899137359" y="0.574056403450564" z="0.0520507631055077"/> Shc1-PTB_1OY2_0061_NPEYp_1852
+            <Coordinates x="-2.32" y="-13.109" z="-5.0907"/>  Carbon of PT
+            <Coordinates x="4.332" y="13.615" z="5.546"/>  Zhou PTR alpha carbon
+        </StartFrom>
+        <Transform name="transform" chain="X" box_size="7.0" move_distance="0.3" angle="20" cycles="500" repeats="1" temperature="5"/>
+        <SlideTogether name="move_ligand_to_protein" chains="X"/>
+        <HighResDocker name="high_res_docker" cycles="6" repack_every_Nth="3" scorefxn="ligand_soft_rep" movemap_builder="docking"/>
+        <FinalMinimizer name="final" scorefxn="hard_rep" movemap_builder="final"/>
+        <InterfaceScoreCalculator name="score" chains="X" scorefxn="hard_rep"/>
+    </MOVERS>
+
+    <PROTOCOLS>
+        <Add mover_name="transform"/>
+        <Add mover_name="high_res_docker"/>
+        <Add mover_name="final"/>
+    </PROTOCOLS>
+
+</ROSETTASCRIPTS>

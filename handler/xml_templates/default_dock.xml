@@ -29,13 +29,13 @@
     </SCORINGGRIDS>
 
     <MOVERS>
-        <Transform name="transform" chain="X" box_size="7.0" move_distance="0.2" angle="20" cycles="1000" repeats="1" temperature="5" initial_perturb="5.0"/>
         <StartFrom name="move_to_start" chain="X">
             <Coordinates x="-2.32" y="-13.109" z="-5.0907"/>  Carbon of PT
             <Coordinates x="-1.6" y="3.522" z="-7.902"/>  Near alpha helix binding region H residue of Zhou peptide in alignment
             <Coordinates x="0.895" y="12.957" z="3.196"/>  Zhou peptide 6 residue N
             <Coordinates x="4.332" y="13.615" z="5.546"/>  Zhou PTR alpha carbon
         </StartFrom>
+        <Transform name="transform" chain="X" box_size="7.0" move_distance="0.2" angle="20" cycles="1000" repeats="1" temperature="5" initial_perturb="5.0"/>
         <SlideTogether name="move_ligand_to_protein" chains="X"/>
         <HighResDocker name="high_res_docker" cycles="6" repack_every_Nth="3" scorefxn="ligand_soft_rep" movemap_builder="docking"/>
         <FinalMinimizer name="final" scorefxn="hard_rep" movemap_builder="final"/>

@@ -32,7 +32,7 @@
 #This flag restores certain parameters to previously published values
 
 -mistakes
-	-restore_pre_talaris_2013_behavior true
--nstruct 2000 
+	-restore_pre_talaris_2013_behavior false
 
 -out:path:all {}
+-nstruct {}

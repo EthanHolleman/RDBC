@@ -17,7 +17,8 @@ def main():
     jobs = (DockJob(
         args.parent.joinpath(ligand.name), 
         ligand, 
-        protein=args.protein) 
+        protein=args.protein,
+        number_iterations=args.num_iters) 
     for ligand in ligand_descriptors)
 
     if args.moist:  # only run the one job (usually for testing)
