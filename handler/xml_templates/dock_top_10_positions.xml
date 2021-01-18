@@ -58,9 +58,12 @@
     </MOVERS>
 
     <PROTOCOLS>
+        <Add mover_name="move_to_start"/>
+        <Add mover_name="move_ligand_to_protein"/>
         <Add mover_name="transform"/>
         <Add mover_name="high_res_docker"/>
         <Add mover_name="final"/>
+        <Add mover_name="add_scores"/>
     </PROTOCOLS>
 
 </ROSETTASCRIPTS>
