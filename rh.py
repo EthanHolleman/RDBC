@@ -17,10 +17,6 @@ def main():
     logger.info('Submitted following arguments: {}'.format(pretty_args))
     ligand_descriptors = LigandDescriptor.generate_from_directory(args.ligands)
     DockJob.rosetta_exe = args.exe
-    if args.xml_template:
-        xml_template = args.xml_template
-    else:
-        xml_template = DEFAULT_XML
 
     protein = Path(args.protein)
     if protein.is_dir():  # if is a directory find all pdb files in this dir
@@ -38,7 +34,9 @@ def main():
                     DockJob(
                         pdb_dir.joinpath(ligand.name), ligand, protein=pdb_path,
                         number_iterations=args.num_iters,
-                        xml_template=xml_template
+                        xml_template=args.xml_template,
+                        batch_template=args.batch_template,
+                        options_template=args.options_template
                     )
                 )
     else:  # only need to create jobs for one protein
@@ -47,7 +45,9 @@ def main():
             ligand,
             protein=args.protein,
             number_iterations=args.num_iters,
-            xml_template=xml_template)
+            xml_template=args.xml_template,
+            batch_template=args.batch_template,
+            options_template=args.options_template)
             for ligand in ligand_descriptors)
 
     if args.moist:  # only run the one job (usually for testing)
