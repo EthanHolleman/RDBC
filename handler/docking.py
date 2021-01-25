@@ -38,9 +38,7 @@ class DockJob():
     @output_dir.setter
     def output_dir(self, new_dir):
         new_dir = Path(new_dir)
-        print(new_dir)
         if not Path(new_dir).is_dir():
-            print('made dir')
             Path(new_dir).mkdir()
         self._output_dir = new_dir
     

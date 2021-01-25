@@ -15,12 +15,13 @@ def main():
     pretty_args = ' '.join(
         ['{}: {}'.format(arg, getattr(args, arg)) for arg in vars(args)])
     logger.info('Submitted following arguments: {}'.format(pretty_args))
-    ligand_descriptors = LigandDescriptor.generate_from_directory(args.ligands)
+    ligand_descriptors = list(LigandDescriptor.generate_from_directory(args.ligands))
     DockJob.rosetta_exe = args.exe
 
     protein = Path(args.protein)
     if protein.is_dir():  # if is a directory find all pdb files in this dir
         protein = [pdb for pdb in protein.iterdir() if pdb.suffix == '.pdb']
+    
     jobs = []
     if isinstance(protein, list):
         # multiple proteins to deal with so need to create directories for
@@ -40,7 +41,7 @@ def main():
                     )
                 )
     else:  # only need to create jobs for one protein
-        jobs = (DockJob(
+        jobs = [DockJob(
             args.parent.joinpath(ligand.name),
             ligand,
             protein=args.protein,
@@ -48,7 +49,7 @@ def main():
             xml_template=args.xml_template,
             batch_template=args.batch_template,
             options_template=args.options_template)
-            for ligand in ligand_descriptors)
+            for ligand in ligand_descriptors]
 
     if args.moist:  # only run the one job (usually for testing)
         logger.info('Running moist')
@@ -65,6 +66,7 @@ def main():
                 logger.info('Submitted job: {}'.format(j.name))
         if job_counter == 0:
             logger.critical('NO JOBS WERE CREATED')
+        print('Total jobs: {}'.format(len(jobs)))
 
 
 if __name__ == "__main__":
