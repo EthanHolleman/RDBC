@@ -20,6 +20,10 @@ def get_args():
     parser.add_argument('-pd', '--target_protein_dir', help='If using -a, path to directory containing all target proteins. Including this option will write the target protein path as a field in the aggregated results.')
 
     args = parser.parse_args()
+
+    if args.aggregate_results_path:
+        return args
+
     args.parent = Path(args.parent)
     args.protein = Path(args.protein)
     args.exe = Path(args.exe)
