@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH -J {}  # job name goes here
+#SBATCH -J REPACK_{}  # job name goes here
 #SBATCH --partition=med
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
