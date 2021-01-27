@@ -19,9 +19,11 @@ def main():
     logger.info('Submitted following arguments: {}'.format(pretty_args))
 
     if args.aggregate_results_path:
+        print('Aggregating results')
         formated_score_filepaths = write_formated_score_files(
             args.aggregate_results_path, args.target_protein_dir
         )
+        print(formated_score_filepaths)
         concatenate_score_files(formated_score_filepaths, args.aggregated_filepath)
         sys.exit()
         
