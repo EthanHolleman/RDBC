@@ -1,9 +1,11 @@
 from handler.ligands import LigandDescriptor
 from handler.docking import DockJob
 from handler.args import get_args
+from handler.aggregator import *
 from handler import make_logger
 from handler import DEFAULT_XML
 from pathlib import Path
+import sys
 
 
 logger = make_logger(__name__)
@@ -15,6 +17,14 @@ def main():
     pretty_args = ' '.join(
         ['{}: {}'.format(arg, getattr(args, arg)) for arg in vars(args)])
     logger.info('Submitted following arguments: {}'.format(pretty_args))
+
+    if args.aggregate_results_path:
+        formated_score_filepaths = write_formated_score_files(
+            args.aggregate_results_path, args.target_protein_dir
+        )
+        concatenate_score_files(formated_score_filepaths, args.aggregated_filepath)
+        sys.exit()
+        
     ligand_descriptors = list(LigandDescriptor.generate_from_directory(args.ligands))
     DockJob.rosetta_exe = args.exe
 

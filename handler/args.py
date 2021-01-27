@@ -15,10 +15,16 @@ def get_args():
     parser.add_argument('-x', '--xml_template', default=DEFAULT_XML, help='Path to Rosetta script XML template.')
     parser.add_argument('-op', '--options_template', default=DEFAULT_OPTIONS, help='Path to Rosetta options script to use for all jobs.')
     parser.add_argument('-b', '--batch_template', default=DEFAULT_BATCH, help='Path to batch script template to use.')
-    a = parser.parse_args()
-    a.parent = Path(a.parent)
-    a.protein = Path(a.protein)
-    a.exe = Path(a.exe)
-    if not a.parent.is_dir():
-        a.parent.mkdir()
-    return a
+    parser.add_argument('-a', '--aggregate_results_path', default=False, help='Path to results from a completed job that you want to aggregate the results from.')
+    parser.add_argument('-f', '--aggregated_filepath', default='agg_results.tsv', help='If using -a, path to file to write aggregated results to.')
+    parser.add_argument('-pd', '--target_protein_dir', help='If using -a, path to directory containing all target proteins. Including this option will write the target protein path as a field in the aggregated results.')
+
+    args = parser.parse_args()
+    args.parent = Path(args.parent)
+    args.protein = Path(args.protein)
+    args.exe = Path(args.exe)
+
+    if not args.parent.is_dir():
+        args.parent.mkdir()
+
+    return args
