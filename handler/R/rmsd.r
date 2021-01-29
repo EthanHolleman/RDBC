@@ -3,6 +3,9 @@ library(argparse)
 library(factoextra)
 library(reshape)
 library(tidyr)
+library(parallel)
+
+# number_cores <- detectCores()
 
 get_args <- function(){
   parser <- ArgumentParser(description='Calculate RMSD across ligand poses in a pdb file collection.')
@@ -83,13 +86,9 @@ calculate_rmsd_for_run <- function(results_dir, output_dir, ligand_dir_to_result
     print(length(pdb.list))
     message('Calculating RMSD')
     pairwise.rmsd.df <- pairwise_ligand_rmsd(pdb.list)
-    hcut <- rmsd_df_to_hcut(pairwise.rmsd.df)
     output.path <- paste(output_dir, basename(ligand_dir), sep = '')
-    output.path.csv <- paste(output.path, '.csv', sep = '')
-    output.path.rds <- paste(output.path, '.rds', sep='')
-    saveRDS(hcut, output.path.rds)
-    write.csv(pairwise.rmsd.df, output.path.csv, , quote = FALSE)
-    
+    output.path <- paste(output.path, '.csv', sep = '')
+    write.csv(pairwise.rmsd.df, output.path, , quote = FALSE)
     message(output.path)
   }
 }
@@ -100,21 +99,16 @@ read_rmsd_file <- function(filepath){
 
 rmsd_df_to_hcut <- function(rmsd.df){
   # get optimal number of groups based on gap statistic
-  gap <- fviz_nbclust(rmsd.df, hcut, 'gap_stat', k.max = nrow(rmsd.df)-1)
+  gap <- fviz_nbclust(rmsd.df, hcut, 'gap_stat')
   n_cuts <- match(max(gap$data$gap), gap$data$gap)
   hcut <- hcut(rmsd.df, k=n_cuts, stand = TRUE)
 }
 
-main <- function(args){
-  calculate_rmsd_for_run(args$results_dir, args$output_dir)
+main <- function(command_args){
+  calculate_rmsd_for_run(command_args$results_dir, command_args$output_dir)
 }
 
 if (!(interactive())){
   main(get_args())
 }
-
-# r <- '/home/ethan/Documents/gino/Shc1-PTB_1OY2_0061'
-# toy <- '/home/ethan/toy'
-# calculate_rmsd_for_run(toy, '/home/ethan/Documents/')
-
 
