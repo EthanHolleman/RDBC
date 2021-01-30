@@ -83,13 +83,20 @@ calculate_rmsd_for_run <- function(results_dir, output_dir, ligand_dir_to_result
     ligand_dir.results <- paste(ligand_dir, ligand_dir_to_results, sep='/')
     message('Reading PDB list')
     pdb.list <- read_pdb_dir_as_list(ligand_dir.results)
+    if (length(pdb.list) > 0){
     print(length(pdb.list))
     message('Calculating RMSD')
     pairwise.rmsd.df <- pairwise_ligand_rmsd(pdb.list)
+    message('Clustering')
+    clust <- rmsd_df_to_hcut(pairwise.rmsd.df)
+    message('Writing results')
     output.path <- paste(output_dir, basename(ligand_dir), sep = '')
-    output.path <- paste(output.path, '.csv', sep = '')
-    write.csv(pairwise.rmsd.df, output.path, , quote = FALSE)
+    output.path.csv <- paste(output.path, '.csv', sep = '')
+    output.path.rsd <- paste(output.path, '.rds', sep='')
+    write.csv(pairwise.rmsd.df, output.path.csv, , quote = FALSE)
+    saveRDS(clust, output.path.rsd)
     message(output.path)
+    }
   }
 }
 
@@ -99,7 +106,7 @@ read_rmsd_file <- function(filepath){
 
 rmsd_df_to_hcut <- function(rmsd.df){
   # get optimal number of groups based on gap statistic
-  gap <- fviz_nbclust(rmsd.df, hcut, 'gap_stat')
+  gap <- fviz_nbclust(rmsd.df, hcut, 'gap_stat', k.max=nrow(rmsd.df)-1)
   n_cuts <- match(max(gap$data$gap), gap$data$gap)
   hcut <- hcut(rmsd.df, k=n_cuts, stand = TRUE)
 }
@@ -111,4 +118,8 @@ main <- function(command_args){
 if (!(interactive())){
   main(get_args())
 }
+
+toy <- "/home/ethan/toy"
+out <- "/home/ethan/Documents/test/"
+calculate_rmsd_for_run(toy, out)
 
