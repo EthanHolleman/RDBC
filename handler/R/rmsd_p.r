@@ -68,8 +68,8 @@ calculate_pairwise_rmsd <- function(coords.list){
 
 
 rmsd_for_all_ligands <- function(results_dir, output_dir, ligand_dir_to_results='results'){
-
-    ligand_dirs <- list.dirs(path = results_dir, full.names = TRUE, recursive = FALSE)
+    print(results_dir)
+    ligand_dirs <- list.dirs(results_dir, full.names=TRUE, recursive=FALSE)
     rmsd.list <- list()
     output_dir.rmsd <- file.path(output_dir, 'rmsd_dfs')
     if (! dir.exists(output_dir.rmsd)){
@@ -77,7 +77,7 @@ rmsd_for_all_ligands <- function(results_dir, output_dir, ligand_dir_to_results=
     }
     for (dir in ligand_dirs){
         dir.pdb <- file.path(dir, ligand_dir_to_results)
-        output_prefix <- file.path(output_dir, basename(dir))
+        output_prefix <- file.path(output_dir.rmsd, basename(dir))
         pdb.paths <- get_pdb_paths(dir.pdb)
         if (length(pdb.paths) > 0){
         ligand.coords <- get_ligand_coords_from_pdb_files(pdb.paths)
@@ -117,14 +117,15 @@ rmsd_hclust <- function(rmsd.df){
 }
 
 main <- function(args){
-    results_dir <- args[1]#args$results_dir
-    output_dir <- args[2] # aargs$output_dir
+    results_dir <- args$results_dir
+    output_dir <- args$output_dir
     rmsd.list <- rmsd_for_all_ligands(results_dir, output_dir)
     hclust_all_ligands(rmsd.list, output_dir)
 }
 
-cl <- makeCluster(detectCores()-4, type='FORK')
+cl <- makeCluster(detectCores(), type='FORK')
 
 if (!interactive()){
     main(get_args())
+    stopCluster(cl)
 }
