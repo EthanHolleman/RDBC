@@ -43,6 +43,16 @@ xyz_coord_df_to_vector <- function(xyz.df){
   coords
 }
 
+
+get_ligand_coord_list <- function(pdb.list){
+  
+  ligand_coord.list <- list()
+  
+  
+}
+
+
+
 get_ligand_coord_vector_from_pdb <- function(pdb.object, chain_name='X'){
   ligand.df <- extract_ligand_coords_from_pdb_object(pdb.object, chain_name)
   xyz_coord_df_to_vector(ligand.df)
@@ -102,6 +112,12 @@ calculate_rmsd_for_run <- function(results_dir, output_dir, ligand_dir_to_result
 
 read_rmsd_file <- function(filepath){
   as.data.frame(read.csv(filepath, row.names = 1))
+}
+
+rmsd_df_to_hclust <- function(rmsd.df){
+  rmsd.df = scale(rmsd.df)
+  fastcluster::hclust(dist(rmsd.df))
+  
 }
 
 rmsd_df_to_hcut <- function(rmsd.df){

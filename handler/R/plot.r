@@ -173,6 +173,20 @@ rank_ligands_from_agg_df <- function(agg.df){
 # rownames(g) <- g[, 1]
 # g <- g[, -1]
 
+# Another idea for random binding is doing something like below.
+# 
+# If we take the pairwise RMSD across all ligands binding to a protein we can
+# create a distance matrix from that data. This would be done for all ligands.
+# This could then be represented as a dentrogram. General binding sites could
+# then be a way to seperate things out from other stuff. 
+# But the problem is that this does not tell you about the score of each of these
+# poses
+# RMSD is a relative thing so those that are low compared to each other
+# group together
+# Could use somekind of tree cutting algo to go from there and figure something
+# out. 
+# https://rpkgs.datanovia.com/factoextra/reference/hcut.html
+
 
 
 
