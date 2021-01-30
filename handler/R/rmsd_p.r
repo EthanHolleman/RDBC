@@ -124,6 +124,7 @@ main <- function(args){
 }
 
 cl <- makeCluster(detectCores(), type='FORK')
+print(paste('Using cores: ', detectCores()))
 
 if (!interactive()){
     main(get_args())
