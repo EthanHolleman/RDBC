@@ -3,6 +3,14 @@ library(bio3d)
 library(factoextra)
 library(argparse)
 
+get_args <- function(){
+  parser <- ArgumentParser(description='Calculate RMSD across ligand poses in a pdb file collection making use of all available processor cores. Save RMSD dataframe as rds file and preform heirarchial clustering using the factoextra package.')
+  parser$add_argument('-r', '--results_dir', help='Path to results directory produced by RDBC program.')
+  parser$add_argument('-o', '--output_dir', help='Path to output directory to write all results to.')
+  parser$parse_args()
+}
+
+
 get_pdb_dir_from_results_dir <- function(results_dir, 
                                          ligand_dir_to_results='results'){
     ligand_dirs <- list.dirs(path = results_dir, full.names = TRUE, recursive = FALSE)
@@ -14,13 +22,6 @@ get_pdb_dir_from_results_dir <- function(results_dir,
 }
 
 
-get_args <- function(){
-  parser <- ArgumentParser(description='Calculate RMSD across ligand poses in a pdb file collection.')
-  parser$add_argument('-r', '--results_dir', help='Path to results directory produced by RDBC program.')
-  parser$add_argument('-o', '--output_dir', help='Path to output directory to write all results to.')
-  parser$parse_args()
-}
-
 get_pdb_paths <- function(pdb.dir){
     pdb.list <- list()
     pdb.files <- list.files(pdb.dir, pattern='\\.pdb$')
@@ -30,6 +31,7 @@ get_pdb_paths <- function(pdb.dir){
     }
     return(pdb.list)
 }
+
 
 xyz_coord_df_to_vector <- function(xyz.df){
   coords <- c()
@@ -42,6 +44,7 @@ xyz_coord_df_to_vector <- function(xyz.df){
   coords
 }
 
+
 get_ligand_coords_from_pdb_path <- function(pdb.filepath){
 
     pdb.object <- bio3d::read.pdb(pdb.filepath)
@@ -49,9 +52,11 @@ get_ligand_coords_from_pdb_path <- function(pdb.filepath){
     xyz_coord_df_to_vector(ligand.df)
 }
 
+
 get_ligand_coords_from_pdb_files <- function(pdb.filepaths.list){
     parLapply(cl, pdb.filepaths.list, get_ligand_coords_from_pdb_path)
 }
+
 
 calculate_pairwise_rmsd <- function(coords.list){
     ligand.rmsd.list <- list()
@@ -89,13 +94,15 @@ rmsd_for_all_ligands <- function(results_dir, output_dir, ligand_dir_to_results=
     rmsd.list
 }
 
-hclust_from_rmsd_df <- function(rmsd.df, output_dir, ligand.name){
+
+hclust_from_rmsd_df <- function(rmsd.df, output_dir, ligand.name, k.max=20){
     
-    gap <- fviz_nbclust(rmsd.df, hcut, 'gap_stat', k.max=nrow(rmsd.df)-1)
+    gap <- fviz_nbclust(rmsd.df, hcut, 'gap_stat', k.max=k.max)
     n_cuts <- match(max(gap$data$gap), gap$data$gap)
     hcut <- hcut(rmsd.df, k=n_cuts, stand = TRUE, hc_method='complete')
     saveRDS(hcut, file.path(output_dir, ligand.name))
 }
+
 
 hclust_all_ligands <- function(rmsd.list, output_dir){
     hclust_dir <- file.path(output_dir, 'hclust')
@@ -103,18 +110,17 @@ hclust_all_ligands <- function(rmsd.list, output_dir){
       dir.create(hclust_dir)
     }
     hclust.rep <- rep(hclust_dir, length(rmsd.list))
-    #parLapply(cl, rmsd.list, hclust_from_rmsd_df, ligand.name=names(rmsd.list))
-              #output_path=hclust.rep)
     for (ligand.name in names(rmsd.list)){
       rmsd.df <- rmsd.list[[ligand.name]]
       hcut <- hclust_from_rmsd_df(rmsd.df, hclust_dir, ligand.name)
     }
 }
 
+
 rmsd_hclust <- function(rmsd.df){
     nbcl <- fviz_nbclust(rmsd.df, hcut, k.max = nrow(rmsd.df)-1)
-    
 }
+
 
 main <- function(args){
     results_dir <- args$results_dir
@@ -122,6 +128,7 @@ main <- function(args){
     rmsd.list <- rmsd_for_all_ligands(results_dir, output_dir)
     hclust_all_ligands(rmsd.list, output_dir)
 }
+
 
 cl <- makeCluster(detectCores(), type='FORK')
 print(paste('Using cores: ', detectCores()))
