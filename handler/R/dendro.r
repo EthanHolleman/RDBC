@@ -3,7 +3,7 @@ library(parallel)
 library(bio3d)
 library(factoextra)
 library(argparse)
-library(plotly)
+#library(plotly)
 library(ggplot2)
 
 cl <- parallel::makeCluster(4)
@@ -193,10 +193,10 @@ average_ligand_distance_to_point_vs_total_score <- function(score.df, x_lab=''){
 save_ggplot_to_directory <- function(plot, dir, filename){
   full_path <- file.path(dir, filename)
   full_path.html <- paste(full_path, '.html', sep='')
-  print(full_path)
+  #print(full_path)
   ggsave(full_path, plot, dpi=500)
-  plot.plotly <- ggplotly(plot)
-  htmlwidgets::saveWidget(as_widget(plot.plotly), full_path.html)
+  #plot.plotly <- ggplotly(plot)
+  #htmlwidgets::saveWidget(as_widget(plot.plotly), full_path.html)
   return(full_path)
 }
 
@@ -265,19 +265,20 @@ main <- function(args){
 
 if (!interactive()){
     parser = get_arg_parser()
-    args <- process_parsed_args(parser$parse_args(args))
+    parsed_args <- parser$parse_args()
+    args <- process_parsed_args(parsed_args)
     main(args)
 }
-parser <- get_arg_parser()
-args <- c(
-  "-r", "/home/ethan/data/igg/rotations/Gino/corrected_hclust/0061_results/rmsd_dfs/RTX60933293", 
-  "-s", "/home/ethan/data/igg/rotations/Gino/random_docking/RTX60933293/results/score.sc",  
-  "-o",  "/home/ethan/data/igg/rotations/Gino/clust_test", 
-  "-k", "25", 
-  "-m", "1000",
-  '-p', "/home/ethan/data/igg/rotations/Gino/random_docking/RTX60933293/results")
-args <- process_parsed_args(parser$parse_args(args))
-main(args)
+# parser <- get_arg_parser()
+# args <- c(
+#   "-r", "/home/ethan/data/igg/rotations/Gino/corrected_hclust/0061_results/rmsd_dfs/RTX60933293", 
+#   "-s", "/home/ethan/data/igg/rotations/Gino/random_docking/RTX60933293/results/score.sc",  
+#   "-o",  "/home/ethan/data/igg/rotations/Gino/clust_test", 
+#   "-k", "25", 
+#   "-m", "1000",
+#   '-p', "/home/ethan/data/igg/rotations/Gino/random_docking/RTX60933293/results")
+# args <- process_parsed_args(parser$parse_args(args))
+# main(args)
 
 parallel::stopCluster(cl)
 

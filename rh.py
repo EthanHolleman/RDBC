@@ -23,7 +23,6 @@ def main():
         formated_score_filepaths = write_formated_score_files(
             args.aggregate_results_path, args.target_protein_dir
         )
-        print(formated_score_filepaths)
         concatenate_score_files(formated_score_filepaths, args.aggregated_filepath)
         sys.exit()
         
