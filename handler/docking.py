@@ -8,6 +8,18 @@ class DockJob():
     job_counter = 0
     rosetta_exe = ''
 
+    @classmethod
+    def copy_job(cls, template_job, new_job_id):
+        template_outdir = template_job.output_dir
+        copy_outdir = template_outdir.with_name(
+            template_outdir.name + '_' + str(new_job_id))
+        return cls(
+            copy_outdir, template_job.ligand_descriptor, 
+            template_job.protein, template_job.xml_template,
+            template_job.options_template, template_job.batch_template,
+            template_job.number_iterations
+        )
+
     def __init__(self, output_dir, ligand_descriptor, protein,
                 xml_template=DEFAULT_XML, options_template=DEFAULT_OPTIONS,
                 batch_template=DEFAULT_BATCH, number_iterations=2000):

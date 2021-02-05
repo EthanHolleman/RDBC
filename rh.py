@@ -61,6 +61,13 @@ def main():
             batch_template=args.batch_template,
             options_template=args.options_template)
             for ligand in ligand_descriptors]
+        
+        if args.multi_iterations:
+            additional_jobs = []
+            for each_job in jobs:
+                for i in range(1, args.multi_iterations):
+                    additional_jobs.append(DockJob.copy_job(each_job, i))
+            jobs += additional_jobs
 
     if args.moist:  # only run the one job (usually for testing)
         logger.info('Running moist')
