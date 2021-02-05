@@ -36,7 +36,7 @@
     </SCORINGGRIDS>
 
     <MOVERS>
-        <Translate name="random_translate" chain="X" distribution="uniform" angstroms="35" cycles="100"/>
+        <Translate name="random_translate" chain="X" distribution="uniform" angstroms="65" cycles="100"/>
         <Transform name="transform" chain="X" box_size="7.0" move_distance="0.3" angle="20" cycles="500" repeats="1" temperature="5"/>
         <SlideTogether name="move_ligand_to_protein" chains="X"/>
         <HighResDocker name="high_res_docker" cycles="6" repack_every_Nth="3" scorefxn="ligand_soft_rep" movemap_builder="docking"/>

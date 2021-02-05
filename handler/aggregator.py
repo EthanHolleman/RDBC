@@ -3,7 +3,6 @@ from pathlib import Path
 import re
 
 
-
 def process_score_file_line(line):
     '''Process a Rosetta score file line into a list.
 
@@ -165,3 +164,44 @@ def concatenate_score_files(formated_score_files, target_file):
                     for line in read_handle:
                         target_handle.write(line)
     return target_file
+
+
+def collect_all_ligand_dirs(ligand_name, dir):
+    return [d for d in Path(dir).iterdir() if ligand_name in Path(d).name]
+
+
+def process_multi_iter_dir(dir_path):
+    score_file = recursive_score_file_collect(dir_path)
+    assert score_file
+    iter_id = Path(dir_path).name
+    sf_header, sf_body = read_score_file(score_file)
+    sf_header, sf_body = add_string_to_score_file_lines(
+        sf_header, sf_body, 'iter_id', iter_id)
+    foramted_sf_name = '{}.formated'.foramt(score_file)
+    write_list_as_delim(foramted_sf_name, sf_header, sf_body)
+    return foramted_sf_name
+
+
+def aggregate_multi_iteration_run(results_dir, agg_path):
+    unique_ligands = set([f.split('_')[0] for f in list(Path(result_dir).iterdir())])
+    formated_score_files = []
+    for unique_ligand in unique_ligands:
+        all_iter_dirs = collect_all_ligand_dirs(unique_ligand, result_dir)
+        for each_iter_dir in all_iter_dirs:
+            sf = process_multi_iter_dir(str(each_iter_dir))
+            formated_score_files.append(sf)
+    concatenate_score_files(formated_score_files, agg_path)
+    return agg_path
+
+        
+        
+    
+    # then we want to go into each of these ligand dirs and foramt the score file
+    # in each score file we also like to aggregate into one super directory possibly
+    # or just add an additional line to the score file which gives the
+    # super dir would probably break less stuff actually so might want to go with that
+
+    # want to do this shit good
+
+    # just add something to the pdb output 
+

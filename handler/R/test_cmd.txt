@@ -1,0 +1,1 @@
+Rscript ~/software/RDBC/handler/R/dendro.r -r /home/ethollem/jobs/corrected_hclust/0061_results/rmsd_dfs/RTX73145433 -s /home/ethollem/jobs/hclust_high_aff_ligands/Shc1-PTB_1OY2_0061/RTX73145433/results/score.sc -p /home/ethollem/jobs/hclust_high_aff_ligands/Shc1-PTB_1OY2_0061/RTX73145433/results -o /home/ethollem/jobs/hclust_high_aff_ligands/results/RTX73145433 -k 25 -m 750
