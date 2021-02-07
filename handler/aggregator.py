@@ -170,26 +170,36 @@ def collect_all_ligand_dirs(ligand_name, dir):
     return [d for d in Path(dir).iterdir() if ligand_name in Path(d).name]
 
 
-def process_multi_iter_dir(dir_path):
-    score_file = recursive_score_file_collect(dir_path)
-    assert score_file
-    iter_id = Path(dir_path).name
-    sf_header, sf_body = read_score_file(score_file)
-    sf_header, sf_body = add_string_to_score_file_lines(
-        sf_header, sf_body, 'iter_id', iter_id)
-    foramted_sf_name = '{}.formated'.foramt(score_file)
-    write_list_as_delim(foramted_sf_name, sf_header, sf_body)
-    return foramted_sf_name
+def process_multi_iter_dir(dir_path, results_name='results'):
+    score_file_dir = Path(dir_path).joinpath(results_name)
+    score_file = score_file_dir.joinpath('score.sc')
+    if score_file.is_file():
+        iter_id = Path(dir_path).name
+        sf_header, sf_body = read_score_file(score_file)
+        sf_header, sf_body = add_string_to_score_file_lines(
+            sf_header, sf_body, 'iter_id', iter_id)
+        foramted_sf_name = '{}.formated'.format(score_file)
+        write_list_as_delim(foramted_sf_name, sf_header, sf_body)
+        return foramted_sf_name
+    else:
+        return None
 
 
 def aggregate_multi_iteration_run(results_dir, agg_path):
-    unique_ligands = set([f.split('_')[0] for f in list(Path(result_dir).iterdir())])
-    formated_score_files = []
+    unique_ligands = set([f.name.split('_')[0] for f in list(Path(results_dir).iterdir())])
+    formated_score_files, no_score_file_dirs = [], 0
     for unique_ligand in unique_ligands:
-        all_iter_dirs = collect_all_ligand_dirs(unique_ligand, result_dir)
+        all_iter_dirs = collect_all_ligand_dirs(unique_ligand, results_dir)
         for each_iter_dir in all_iter_dirs:
             sf = process_multi_iter_dir(str(each_iter_dir))
-            formated_score_files.append(sf)
+            if sf:
+                formated_score_files.append(sf)
+            else:
+                no_score_file_dirs += 1
+    print('{} of {} directories had score files.'.format(
+        len(formated_score_files),
+        len(formated_score_files) + no_score_file_dirs
+    ))
     concatenate_score_files(formated_score_files, agg_path)
     return agg_path
 

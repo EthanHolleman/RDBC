@@ -25,7 +25,13 @@ def main():
         )
         concatenate_score_files(formated_score_filepaths, args.aggregated_filepath)
         sys.exit()
-        
+    elif args.agg_multi_iterations:
+        aggregate_multi_iteration_run(args.parent, args.agg_multi_iterations)
+        sys.exit()
+    
+
+
+
     ligand_descriptors = list(LigandDescriptor.generate_from_directory(args.ligands))
     DockJob.rosetta_exe = args.exe
 

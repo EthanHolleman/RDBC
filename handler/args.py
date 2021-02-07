@@ -20,13 +20,20 @@ def get_args():
     parser.add_argument('-f', '--aggregated_filepath', default='agg_results.tsv', help='If using -a, path to file to write aggregated results to.')
     parser.add_argument('-pd', '--target_protein_dir', help='If using -a, path to directory containing all target proteins. Including this option will write the target protein path as a field in the aggregated results.')
     parser.add_argument('-mi', '--multi_iterations', type=int, help='Run the same experiment multiple times. Used for random docking to get more samples (poses).')
+    parser.add_argument('-mia', '--agg_multi_iterations', default='')
     args = parser.parse_args()
 
-    if args.aggregate_results_path:
+    if args.aggregate_results_path or args.agg_multi_iterations:
         return args
     
     if not args.parent:
         print('Please specify a parent directory to write results to (-o)')
+        sys.exit()
+    if not args.protein:
+        print('Please specify path to a protein target (-p)')
+        sys.exit()
+    if not args.exe:
+        print('Please specify the path to your Rosetta scripts exe (-e)')
         sys.exit()
 
     args.parent = Path(args.parent)
